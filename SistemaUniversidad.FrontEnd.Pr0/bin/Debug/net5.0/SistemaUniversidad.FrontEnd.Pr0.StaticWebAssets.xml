@@ -1,4 +1,4 @@
 ﻿<StaticWebAssets Version="1.0">
-  <ContentRoot BasePath="/" Path="C:\Users\andyj\Escritorio\Progra\BD2\SistemaUniversidad.FrontEnd.Pr0\bin\Debug\net5.0\wwwroot\" />
-  <ContentRoot BasePath="/" Path="C:\Users\andyj\Escritorio\Progra\BD2\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\scopedcss\bundle\" />
+  <ContentRoot BasePath="/" Path="C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\bin\Debug\net5.0\wwwroot\" />
+  <ContentRoot BasePath="/" Path="C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\scopedcss\bundle\" />
 </StaticWebAssets>
