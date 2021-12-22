@@ -4,7 +4,7 @@
 #pragma warning disable 0649
 #pragma warning disable 0169
 
-namespace SistemaUniversidad.FrontEnd.Pr0.Shared
+namespace SistemaUniversidad.FrontEnd.Pr0.Pages
 {
     #line hidden
     using System;
@@ -89,7 +89,8 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 #line default
 #line hidden
 #nullable disable
-    public partial class SideBar : Microsoft.AspNetCore.Components.ComponentBase
+    [Microsoft.AspNetCore.Components.RouteAttribute("/CicloLectivo")]
+    public partial class CicloLectivo___Copia : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -97,25 +98,27 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 54 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Shared\SideBar.razor"
+#line 76 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\CicloLectivo - Copia.razor"
        
+    private CicloLectivoDto[] ListaDeCicloLectivo;//Acá se guardará la lista de aulas
 
-    [Inject]
-    NavigationManager NavigationManager { get; set; }
+    private string UtlHost = "https://localhost:44365/api";
 
-    protected override void OnInitialized() => NavigationManager.LocationChanged += (s, e) => StateHasChanged();
-
-    bool IsActive(string href, NavLinkMatch navLinkMatch = NavLinkMatch.Prefix)
+    protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
     {
-        var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower();
-        return navLinkMatch == NavLinkMatch.All ? relativePath == href.ToLower() : relativePath.StartsWith(href.ToLower());
+        await ObtenerAulas(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
     }
 
-    string GetActive(string href, NavLinkMatch navLinkMatch = NavLinkMatch.Prefix) => IsActive(href, navLinkMatch) ? "active" : "na";
+    private async Task ObtenerAulas()
+    {
+        ListaDeCicloLectivo = await Http.GetFromJsonAsync<CicloLectivoDto[]>($"{UtlHost}/CiclosLectivos");
+    }
 
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JSRuntime { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private HttpClient Http { get; set; }
     }
 }
 #pragma warning restore 1591

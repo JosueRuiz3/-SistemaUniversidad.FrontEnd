@@ -106,10 +106,10 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
     {
-        await ObtenerAulas(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerCicloLectivo(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
     }
 
-    private async Task ObtenerAulas()
+    private async Task ObtenerCicloLectivo()
     {
         ListaDeCicloLectivo = await Http.GetFromJsonAsync<CicloLectivoDto[]>($"{UtlHost}/CiclosLectivos");
     }

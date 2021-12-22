@@ -1276,3 +1276,5 @@ C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd
 C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\SistemaUniversidad.FrontEnd.Pr0.pdb
 C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\RazorDeclaration\Pages\CicloLectivo.razor.g.cs
 C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\Razor\Pages\CicloLectivo.razor.g.cs
+C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\RazorDeclaration\Pages\Cursos.razor.g.cs
+C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\Razor\Pages\Cursos.razor.g.cs
