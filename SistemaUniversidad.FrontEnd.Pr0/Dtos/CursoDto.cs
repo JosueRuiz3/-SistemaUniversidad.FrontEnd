@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
 {
-    public class AulaDto
+    public class CursoDto
     {
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
         [MaxLength(10, ErrorMessage = "{0} tiene que tener máximo {1} caracteres")]
-        public string NumeroAula { get; set; }
+        public string CodigoCurso { get; set; }
 
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
-        public string NombreAula { get; set; }
+        public string NombreCurso { get; set; }
+
+        [Required(ErrorMessage = "El precio es obligatorio")]
+        public decimal? Precio { get; set; }
 
     }
 }

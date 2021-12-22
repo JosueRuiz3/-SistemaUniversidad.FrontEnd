@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
 {
-    public class AulaDto
+    public class CicloLectivoDto
+
     {
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
         [MaxLength(10, ErrorMessage = "{0} tiene que tener máximo {1} caracteres")]

@@ -6,22 +6,25 @@ using System.Threading.Tasks;
 
 namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
 {
-    public class SedeDto
+    public class CursosEnAulaDto
     {
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
-        [MaxLength(10, ErrorMessage = "{0} tiene que tener máximo {1} caracteres")]
-        public string CodigoSede { get; set; }
+        public string CodigoCurso { get; set; }
 
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
-        public string NombreSede { get; set; }
+        public string NumeroAula { get; set; }
 
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
-        public string Telefono { get; set; }
+        public string NumeroCiclo { get; set; }
 
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
-        public string CorreoElectronico { get; set; }
+        public string HorarioInicio { get; set; }
 
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
-        public string Direccion { get; set; }
+        public string HorarioFin { get; set; }
+
+        [Required(ErrorMessage = "{0} es un campo obligatorio")]
+        public string DiaDeLaSemana { get; set; }
+
     }
 }
