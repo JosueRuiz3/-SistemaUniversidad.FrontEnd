@@ -40,12 +40,12 @@
 
                     <tbody class="mt-1">
 
-                        @foreach (var Aula in ListaDeCursosConProfesores)
+                        @foreach (var CursosConProfesore in ListaDeCursosConProfesores)
                         {
                         <tr class="bgc-h-yellow-l4 d-style">
-                            <td class="text-600 text-dark">@Aula.CodigoCurso</td>
-                            <td class="text-600 text-orange-d2">@Aula.CedulaProfesor</td>
-                            <td class="text-600 text-orange-d2">@Aula.NumeroCiclo</td>
+                            <td class="text-600 text-dark">@CursosConProfesore.CodigoCurso</td>
+                            <td class="text-600 text-orange-d2">@CursosConProfesore.CedulaProfesor</td>
+                            <td class="text-600 text-orange-d2">@CursosConProfesore.NumeroCiclo</td>
                             <td>
                                 <div class="d-none d-lg-flex">
 

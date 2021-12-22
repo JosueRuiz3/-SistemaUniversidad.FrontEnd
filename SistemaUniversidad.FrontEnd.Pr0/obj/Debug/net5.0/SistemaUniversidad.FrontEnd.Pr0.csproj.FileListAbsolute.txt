@@ -1286,3 +1286,7 @@ C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd
 C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\Razor\Pages\CursosEnMatricula.razor.g.cs
 C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\RazorDeclaration\Pages\Carreras.razor.g.cs
 C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\Razor\Pages\Carreras.razor.g.cs
+C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\RazorDeclaration\Pages\Estudiante.razor.g.cs
+C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\Razor\Pages\Estudiante.razor.g.cs
+C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\RazorDeclaration\Pages\Matricula.razor.g.cs
+C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\obj\Debug\net5.0\Razor\Pages\Matricula.razor.g.cs
