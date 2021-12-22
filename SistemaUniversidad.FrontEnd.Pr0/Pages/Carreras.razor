@@ -1,9 +1,9 @@
-﻿@page "/CursosEnAulas"
+﻿@page "/Carreras"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
 <h1>
-    Lista Cursos En Aulas
+    Gestión de Carreras
 </h1>
 
 <div class="card dcard">
@@ -12,46 +12,40 @@
         <form autocomplete="off">
             <div class="d-flex justify-content-between flex-column flex-sm-row mb-3 px-2 px-sm-0">
                 <h3 class="text-125 pl-1 mb-3 mb-sm-0 text-secondary-d4">
-                    Listado de Aulas
+                    Listado de Carreras
                 </h3>
 
                 <div class="mb-2 mb-sm-0">
-                    <button type="button" class="btn btn-blue px-3 d-block w-100 text-95 radius-round border-2 brc-black-tp10" @*@onclick="MostrarModalDeAgregar" *@>
+                    <button type="button" class="btn btn-blue px-3 d-block w-100 text-95 radius-round border-2 brc-black-tp10" @*@onclick="MostrarModalDeAgregar"*@>
                         <i class="fa fa-plus mr-1"></i>
-                        Agregar <span class="d-sm-none d-md-inline">Aula</span>
+                        Agregar <span class="d-sm-none d-md-inline">Carrera</span>
                     </button>
                 </div>
             </div>
 
-            @if (ListaDeCursosEnAulas == null)
+            @if (ListaDeCarreras == null)
             {
-                <p><em>Cargando Listado De Cursos en Aulas...</em></p> }
+                <p><em>Cargando Listado De Carreras...</em></p> }
             else
             {
                 <table id="simple-table" class="mb-0 table table-borderless table-bordered-x brc-secondary-l3 text-dark-m2 radius-1 overflow-hidden">
                     <thead class="text-dark-tp3 bgc-grey-l4 text-90 border-b-1 brc-transparent">
                         <tr>
-                            <th>Codigo Curso</th>
-                            <th>Numero Aula</th>
-                            <th>Numero Ciclo</th>
-                            <th>Horario Inicio</th>
-                            <th>Horario Fin</th>
-                            <th>Dia De La Semana</th>
+                            <th>Codigo de Carrera</th>
+                            <th>Nombre de Carrera</th>
+                            <th>Acreditada</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody class="mt-1">
 
-                        @foreach (var Aula in ListaDeCursosEnAulas)
+                        @foreach (var Carrera in ListaDeCarreras)
                         {
                         <tr class="bgc-h-yellow-l4 d-style">
-                            <td class="text-600 text-dark">@Aula.CodigoCurso</td>
-                            <td class="text-600 text-orange-d2">@Aula.NumeroAula</td>
-                            <td class="text-600 text-orange-d2">@Aula.NumeroCiclo</td>
-                            <td class="text-600 text-orange-d2">@Aula.HorarioInicio</td>
-                            <td class="text-600 text-orange-d2">@Aula.HorarioFin</td>
-                            <td class="text-600 text-orange-d2">@Aula.DiaDeLaSemana</td>
+                            <td class="text-600 text-dark">@Carrera.CodigoCarrera</td>
+                            <td class="text-600 text-orange-d2">@Carrera.NombreCarrera</td>
+                            <td class="text-600 text-orange-d2">@Carrera.Acreditada</td>
                             <td>
                                 <div class="d-none d-lg-flex">
 
@@ -67,9 +61,9 @@
                                 </div>
                             </td>
                         </tr>
-                        }
+}
                     </tbody>
-                </table>}
+                </table>    }
 
         </form>
     </div>
@@ -78,17 +72,17 @@
 
 
 @code {
-    private CursosEnAulaDto[] ListaDeCursosEnAulas;//Acá se guardará la lista de aulas
+    private CarreraDto[] ListaDeCarreras;//Acá se guardará la lista de carreras
 
     private string UtlHost = "https://localhost:44365/api";
 
     protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
     {
-        await ObtenerCursosEnAulas(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerCarreras(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
     }
 
-    private async Task ObtenerCursosEnAulas()
+    private async Task ObtenerCarreras()
     {
-        ListaDeCursosEnAulas = await Http.GetFromJsonAsync<CursosEnAulaDto[]>($"{UtlHost}/CursosEnAulas");
+        ListaDeCarreras = await Http.GetFromJsonAsync<CarreraDto[]>($"{UtlHost}/Carreras");
     }
 }

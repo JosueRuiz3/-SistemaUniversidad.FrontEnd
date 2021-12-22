@@ -1,9 +1,9 @@
-﻿@page "/CursosEnAulas"
+﻿@page "/CursosEnMatriculas"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
 <h1>
-    Lista Cursos En Aulas
+    Lista de Cursos en Matricula
 </h1>
 
 <div class="card dcard">
@@ -23,35 +23,30 @@
                 </div>
             </div>
 
-            @if (ListaDeCursosEnAulas == null)
+            @if (ListaDeCursosEnMatricula == null)
             {
-                <p><em>Cargando Listado De Cursos en Aulas...</em></p> }
+                <p><em>Cargando Listado De Cursos en Matricula...</em></p> }
             else
             {
                 <table id="simple-table" class="mb-0 table table-borderless table-bordered-x brc-secondary-l3 text-dark-m2 radius-1 overflow-hidden">
                     <thead class="text-dark-tp3 bgc-grey-l4 text-90 border-b-1 brc-transparent">
                         <tr>
+                            <th>Numero Matricula</th>
                             <th>Codigo Curso</th>
-                            <th>Numero Aula</th>
+                            <th>Numero Matricula</th>
                             <th>Numero Ciclo</th>
-                            <th>Horario Inicio</th>
-                            <th>Horario Fin</th>
-                            <th>Dia De La Semana</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody class="mt-1">
 
-                        @foreach (var Aula in ListaDeCursosEnAulas)
+                        @foreach (var Aula in ListaDeCursosEnMatricula)
                         {
                         <tr class="bgc-h-yellow-l4 d-style">
-                            <td class="text-600 text-dark">@Aula.CodigoCurso</td>
-                            <td class="text-600 text-orange-d2">@Aula.NumeroAula</td>
+                            <td class="text-600 text-dark">@Aula.NumeroMatricula</td>
+                            <td class="text-600 text-orange-d2">@Aula.CodigoCurso</td>
                             <td class="text-600 text-orange-d2">@Aula.NumeroCiclo</td>
-                            <td class="text-600 text-orange-d2">@Aula.HorarioInicio</td>
-                            <td class="text-600 text-orange-d2">@Aula.HorarioFin</td>
-                            <td class="text-600 text-orange-d2">@Aula.DiaDeLaSemana</td>
                             <td>
                                 <div class="d-none d-lg-flex">
 
@@ -78,17 +73,17 @@
 
 
 @code {
-    private CursosEnAulaDto[] ListaDeCursosEnAulas;//Acá se guardará la lista de aulas
+    private CursosEnMatriculaDto[] ListaDeCursosEnMatricula;//Acá se guardará la lista de aulas
 
     private string UtlHost = "https://localhost:44365/api";
 
     protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
     {
-        await ObtenerCursosEnAulas(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerListaDeCursosEnMatricula(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
     }
 
-    private async Task ObtenerCursosEnAulas()
+    private async Task ObtenerListaDeCursosEnMatricula()
     {
-        ListaDeCursosEnAulas = await Http.GetFromJsonAsync<CursosEnAulaDto[]>($"{UtlHost}/CursosEnAulas");
+        ListaDeCursosEnMatricula = await Http.GetFromJsonAsync<CursosEnMatriculaDto[]>($"{UtlHost}/CursosEnMatriculas");
     }
 }
