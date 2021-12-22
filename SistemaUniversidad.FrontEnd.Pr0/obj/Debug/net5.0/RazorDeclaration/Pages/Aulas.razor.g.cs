@@ -98,9 +98,18 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 72 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Aulas.razor"
+#line 182 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Aulas.razor"
        
     private AulaDto[] ListaDeAulas;//Acá se guardará la lista de aulas
+
+    private AulaDto AulaDtoModel = new();
+
+
+    private string AccionDeEdicion;
+
+    private string NumeroAulaPorActualizar;
+
+    private string NumeroAulaPorEliminar;
 
     private string UtlHost = "https://localhost:44365/api";
 
@@ -109,10 +118,144 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         await ObtenerAulas(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
     }
 
+    private async Task MostrarModalDeAgregar()
+    {
+
+        AccionDeEdicion = "Agregar"; //Se especifica que esta en modo de "Agregar" para en el método de Guardar "GuardarAula" entonces hacer el insert
+
+        AulaDtoModel = new(); //Se limpia el modelo y por ende se limpian los controles donde el usuario ingresa los datos
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeAula"); //global.openModa: Esta funcion tiene que existir  en wwwroot/js/utilitarios.js, "ModalEdicionDeAula" :es el id del modal que se quiere ocultar o mostrar
+
+    }
+
+    private async Task MostrarModalDeActualizar(string NumeroAula)
+    {
+
+        AccionDeEdicion = "Actualizar";//Se especifica que esta en modo de "Actualizar" para en el método de Guardar "GuardarAula" entonces hacer el Update
+
+        await ObtenerAulaPorId(NumeroAula); //Se obtiene los datos del API de una aula, para editarla
+
+        NumeroAulaPorActualizar = NumeroAula; //deja en cache por así decirlo el número de aula que se va a actualizar
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeAula");
+
+    }
+
+    private async Task GuardarAula()
+    {
+        if (AccionDeEdicion == "Agregar")
+        {
+            await AgregarAula(); //llama al método que va al API a insertar un Aula
+        }
+        else
+        {
+            await ActualizarAula(); //llama al método que va al API a actualizar un Aula
+        }
+    }
+
+
+    private async Task MostrarModalDeEliminar(string NumeroAula)
+    {
+
+        await ObtenerAulaPorId(NumeroAula); //Se obtiene los datos del API de una aula, para eliminarla
+
+        NumeroAulaPorEliminar = NumeroAula; //deja en cache por así decirlo el núnmero de aula que se va a eliminar
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeAula");
+    }
+
+    private async Task ConfirmarEliminacionDeAula() //Este método se ejecuta cuanso se presiona el botón de "Sí", para borrar un aula
+    {
+
+        await EliminarAula(); //llama al método que va al API a liminar un Aula
+
+    }
+
+
     private async Task ObtenerAulas()
     {
         ListaDeAulas = await Http.GetFromJsonAsync<AulaDto[]>($"{UtlHost}/Aulas");
     }
+
+    private async Task ObtenerAulaPorId(string NumeroAula)
+    {
+        AulaDtoModel = await Http.GetFromJsonAsync<AulaDto>($"{UtlHost}/Aulas/{NumeroAula}"); // ejemplo: https://localhost:44302/api/Aulas/23
+
+    }
+
+
+    private async Task AgregarAula()
+    {
+        var Aula = AulaDtoModel; //Este objeto "AulaDtoModel", contiene los valores que el usuario ingresa en los texbox, la magia lo hace el <EditForm Model="@AulaDtoModel", que llena automaticamente el objeto con lo que el usuario ingresa
+
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/Aulas", Aula); // ejemplo: https://localhost:44302/api/Aulas
+
+        if (response.IsSuccessStatusCode) //si todo sale bien con el llamado al API 
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeAula");
+
+            await ObtenerAulas(); //Se recarga la lista da ulas para poder ver el registro agregado
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Aula agregada correctamente");
+
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}"); //Se muestra en la consola el error que devuelve el API
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar el aula ");
+
+        }
+    }
+
+    private async Task ActualizarAula()
+    {
+        var Aula = AulaDtoModel; //Este objeto "AulaDtoModel", contiene los valores que el usuario ingresa en los texbox, la magia lo hace el <EditForm Model="@AulaDtoModel", que llena automaticamente el objeto con lo que el usuario ingresa
+
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/Aulas/{NumeroAulaPorActualizar}", Aula);// ejemplo: https://localhost:44302/api/Aulas/23
+
+        if (response.IsSuccessStatusCode) //si todo sale bien con el llamado al API 
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeAula");
+
+            await ObtenerAulas(); //Se recarga la lista da ulas para poder ver el registro actualizado
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Aula actualizada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}"); //Se muestra en la consola el error que devuelve el API
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar el aula ");
+
+        }
+    }
+
+    private async Task EliminarAula()
+    {
+        using var response = await Http.DeleteAsync($"{UtlHost}/Aulas/{NumeroAulaPorEliminar}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeAula");
+
+            await ObtenerAulas();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Aula eliminada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar el aula");
+
+        }
+    }
+
 
 #line default
 #line hidden
