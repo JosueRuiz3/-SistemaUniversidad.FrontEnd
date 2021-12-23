@@ -98,20 +98,160 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 75 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\CursosEnMatricula.razor"
+#line 206 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\CursosEnMatricula.razor"
        
-    private CursosEnMatriculaDto[] ListaDeCursosEnMatricula;//Acá se guardará la lista de aulas
+    private CursosEnMatriculaDto[] ListaDeCursosEnMatricula;
+
+    private CursosEnMatriculaDto CursosEnMatriculasDtoModel = new();
+
+
+    private string AccionDeEdicion;
+
+    private int CursosEnMatriculasPorActualizar;
+
+    private int CursosEnMatriculasPorEliminar;
 
     private string UtlHost = "https://localhost:44365/api";
 
-    protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
+    protected override async Task OnInitializedAsync()
     {
-        await ObtenerListaDeCursosEnMatricula(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerListaDeCursosEnMatricula();
     }
+
+    private async Task MostrarModalDeAgregar()
+    {
+
+        AccionDeEdicion = "Agregar";
+        CursosEnMatriculasDtoModel = new();
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCursosEnMatriculas");
+    }
+
+    private async Task MostrarModalDeActualizar(int NumeroMatricula)
+    {
+
+        AccionDeEdicion = "Actualizar";
+
+        await ObtenerCursosEnMatriculasPorId(NumeroMatricula);
+
+        CursosEnMatriculasPorActualizar = NumeroMatricula;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCursosEnMatriculas");
+
+    }
+
+    private async Task GuardarCursosEnMatriculas()
+    {
+        if (AccionDeEdicion == "Agregar")
+        {
+            await AgregarCursosEnMatriculas();
+        }
+        else
+        {
+            await ActualizarCursosEnMatriculas();
+        }
+    }
+
+
+    private async Task MostrarModalDeEliminar(int NumeroMatricula)
+    {
+
+        await ObtenerCursosEnMatriculasPorId(NumeroMatricula);
+
+        CursosEnMatriculasPorEliminar = NumeroMatricula;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeCursosEnMatriculas");
+    }
+
+    private async Task ConfirmarEliminacionDeAula()
+    {
+
+        await EliminarCursosEnMatriculas();
+
+    }
+
 
     private async Task ObtenerListaDeCursosEnMatricula()
     {
         ListaDeCursosEnMatricula = await Http.GetFromJsonAsync<CursosEnMatriculaDto[]>($"{UtlHost}/CursosEnMatriculas");
+    }
+
+    private async Task ObtenerCursosEnMatriculasPorId(int NumeroMatricula)
+    {
+        CursosEnMatriculasDtoModel = await Http.GetFromJsonAsync<CursosEnMatriculaDto>($"{UtlHost}/CursosEnMatriculas/{NumeroMatricula}");
+
+    }
+
+
+    private async Task AgregarCursosEnMatriculas()
+    {
+        var cursosEnMatricula = CursosEnMatriculasDtoModel;
+
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/CursosEnMatriculas", cursosEnMatricula);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCursosEnMatriculas");
+
+            await ObtenerListaDeCursosEnMatricula();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Cursos En Matriculas agregada correctamente");
+
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar los Cursos En Matriculas ");
+
+        }
+    }
+
+    private async Task ActualizarCursosEnMatriculas()
+    {
+        var cursosEnMatricula = CursosEnMatriculasDtoModel;
+
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/CursosEnMatriculas/{CursosEnMatriculasPorActualizar}", cursosEnMatricula);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCursosEnMatriculas");
+
+            await ObtenerListaDeCursosEnMatricula();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Cursos En Matriculas actualizada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar el aula ");
+
+        }
+    }
+
+    private async Task EliminarCursosEnMatriculas()
+    {
+        using var response = await Http.DeleteAsync($"{UtlHost}/CursosEnMatriculas/{CursosEnMatriculasPorEliminar}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCursosEnMatriculas");
+
+            await ObtenerListaDeCursosEnMatricula();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Cursos En Matriculas eliminada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar el aula");
+
+        }
     }
 
 #line default

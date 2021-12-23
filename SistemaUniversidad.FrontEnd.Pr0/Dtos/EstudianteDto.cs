@@ -29,5 +29,8 @@ namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
 
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
         public int Edad { get; set; }
+
+        public bool Activo { get; set; }
+
     }
 }

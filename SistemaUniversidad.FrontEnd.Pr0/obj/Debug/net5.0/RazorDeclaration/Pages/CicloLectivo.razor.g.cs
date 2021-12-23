@@ -185,9 +185,9 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     private async Task AgregarCicloLectivo()
     {
-        var CicloLectivo = CicloLectivoDtoModel;
+        var cicloLectivo = CicloLectivoDtoModel;
 
-        using var response = await Http.PostAsJsonAsync($"{UtlHost}/CiclosLectivos", CicloLectivo);
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/CiclosLectivos", cicloLectivo);
 
         if (response.IsSuccessStatusCode)
         {
@@ -210,9 +210,9 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     private async Task ActualizarCicloLectivo()
     {
-        var CicloLectivo = CicloLectivoDtoModel;
+        var cicloLectivo = CicloLectivoDtoModel;
 
-        using var response = await Http.PutAsJsonAsync($"{UtlHost}/CiclosLectivos/{NumeroCicloPorActualizar}", CicloLectivo);
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/CiclosLectivos/{NumeroCicloPorActualizar}", cicloLectivo);
 
         if (response.IsSuccessStatusCode)
         {

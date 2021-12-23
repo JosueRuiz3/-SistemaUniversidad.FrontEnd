@@ -21,5 +21,7 @@ namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
         [Required(ErrorMessage = "La fecha de fin es obligatoria")]
         public DateTime FechaFin { get; set; }
 
+        public bool Activo { get; set; }
+
     }
 }
