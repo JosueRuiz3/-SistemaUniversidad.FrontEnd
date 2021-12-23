@@ -17,5 +17,6 @@ namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
 
         public bool? Acreditada { get; set; }
 
+        public bool Activo { get; set; }
     }
 }

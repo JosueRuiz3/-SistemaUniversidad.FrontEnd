@@ -98,20 +98,159 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 74 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Carreras.razor"
+#line 183 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Carreras.razor"
        
-    private CarreraDto[] ListaDeCarreras;//Acá se guardará la lista de carreras
+
+    private CarreraDto[] ListaDeCarreras;
+
+    private CarreraDto CarreraDtoModel = new();
+
+
+    private string AccionDeEdicion;
+
+    private string CodigoCarreraPorActualizar;
+
+    private string CodigoCarreraPorEliminar;
 
     private string UtlHost = "https://localhost:44365/api";
 
-    protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
+    protected override async Task OnInitializedAsync()
     {
-        await ObtenerCarreras(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerCarreras();
     }
+
+    private async Task MostrarModalDeAgregar()
+    {
+
+        AccionDeEdicion = "Agregar";
+        CarreraDtoModel = new();
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCarreras");
+    }
+
+    private async Task MostrarModalDeActualizar(string CodigoCarrera)
+    {
+
+        AccionDeEdicion = "Actualizar";
+
+        await ObtenerCarrerasPorId(CodigoCarrera);
+
+        CodigoCarreraPorActualizar = CodigoCarrera;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCarreras");
+
+    }
+
+    private async Task GuardarCarreras()
+    {
+        if (AccionDeEdicion == "Agregar")
+        {
+            await AgregarCarrera();
+        }
+        else
+        {
+            await ActualizarCarrera();
+        }
+    }
+
+    private async Task MostrarModalDeEliminar(string CodigoCarrera)
+    {
+
+        await ObtenerCarrerasPorId(CodigoCarrera);
+
+        CodigoCarreraPorEliminar = CodigoCarrera;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeCarreras");
+    }
+
+    private async Task ConfirmarEliminacionDeCarrera()
+    {
+
+        await EliminarCarrera();
+
+    }
+
 
     private async Task ObtenerCarreras()
     {
         ListaDeCarreras = await Http.GetFromJsonAsync<CarreraDto[]>($"{UtlHost}/Carreras");
+    }
+
+    private async Task ObtenerCarrerasPorId(string CodigoCarrera)
+    {
+        CarreraDtoModel = await Http.GetFromJsonAsync<CarreraDto>($"{UtlHost}/Carreras/{CodigoCarrera}");
+
+    }
+
+    private async Task AgregarCarrera()
+    {
+        var Carrera = CarreraDtoModel;
+
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/Carreras", Carrera);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarrera");
+
+            await ObtenerCarreras();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Carrera agregada correctamente");
+
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar la Carrera ");
+
+        }
+    }
+
+    private async Task ActualizarCarrera()
+    {
+        var Carrera = CarreraDtoModel;
+
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/Carreras/{CodigoCarreraPorActualizar}", Carrera);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarrera");
+
+            await ObtenerCarreras();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Carrera actualizada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar la Carrera ");
+
+        }
+    }
+
+    private async Task EliminarCarrera()
+    {
+        using var response = await Http.DeleteAsync($"{UtlHost}/Carreras/{CodigoCarreraPorEliminar}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCarrera");
+
+            await ObtenerCarreras();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Carrera eliminada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar la Carrera");
+
+        }
     }
 
 #line default
