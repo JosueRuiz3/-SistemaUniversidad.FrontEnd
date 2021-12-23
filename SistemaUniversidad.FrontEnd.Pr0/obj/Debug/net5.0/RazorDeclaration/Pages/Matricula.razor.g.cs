@@ -89,7 +89,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/Matriculas")]
+    [Microsoft.AspNetCore.Components.RouteAttribute("/Matricula")]
     public partial class Matricula : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998

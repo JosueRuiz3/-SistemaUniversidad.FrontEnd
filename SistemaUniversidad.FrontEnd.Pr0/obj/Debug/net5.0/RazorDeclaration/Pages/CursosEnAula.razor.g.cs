@@ -89,7 +89,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/CursosEnAulas")]
+    [Microsoft.AspNetCore.Components.RouteAttribute("/CursosEnAula")]
     public partial class CursosEnAula : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998

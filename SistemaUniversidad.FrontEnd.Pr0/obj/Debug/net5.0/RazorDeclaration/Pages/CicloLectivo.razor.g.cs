@@ -98,7 +98,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 231 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\CicloLectivo.razor"
+#line 232 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\CicloLectivo.razor"
        
     private CicloLectivoDto[] ListaDeCicloLectivo;
 
@@ -107,9 +107,9 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     private string AccionDeEdicion;
 
-    private string NumeroCicloPorActualizar;
+    private string CiclosLectivosPorActualizar;
 
-    private string NumeroCicloPorEliminar;
+    private string CiclosLectivosPorEliminar;
 
     private string UtlHost = "https://localhost:44365/api";
 
@@ -124,7 +124,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         AccionDeEdicion = "Agregar";
         CicloLectivoDtoModel = new();
 
-        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCicloLectivo");
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCiclosLectivos");
     }
 
     private async Task MostrarModalDeActualizar(string NumeroCiclo)
@@ -134,21 +134,21 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
         await ObtenerCicloLectivoPorId(NumeroCiclo);
 
-        NumeroCicloPorActualizar = NumeroCiclo;
+        CiclosLectivosPorActualizar = NumeroCiclo;
 
-        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCicloLectivo");
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCiclosLectivos");
 
     }
 
-    private async Task GuardarCiclo()
+    private async Task GuardarCiclosLectivos()
     {
         if (AccionDeEdicion == "Agregar")
         {
-            await AgregarCicloLectivo();
+            await AgregarCiclosLectivos();
         }
         else
         {
-            await ActualizarCicloLectivo();
+            await ActualizarCiclosLectivos();
         }
     }
 
@@ -158,18 +158,17 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
         await ObtenerCicloLectivoPorId(NumeroCiclo);
 
-        NumeroCicloPorEliminar = NumeroCiclo;
+        CiclosLectivosPorEliminar = NumeroCiclo;
 
-        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeCicloLectivo");
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeCiclosLectivos");
     }
 
-    private async Task ConfirmarEliminacionDeCiclo()
+    private async Task ConfirmarEliminacionDeCicloLectivo()
     {
 
-        await EliminarCiclo();
+        await EliminarCiclosLectivos();
 
     }
-
 
     private async Task ObtenerCicloLectivo()
     {
@@ -182,8 +181,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     }
 
-
-    private async Task AgregarCicloLectivo()
+    private async Task AgregarCiclosLectivos()
     {
         var cicloLectivo = CicloLectivoDtoModel;
 
@@ -191,11 +189,11 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCicloLectivo");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCiclosLectivos");
 
             await ObtenerCicloLectivo();
 
-            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Ciclo Lectivo agregada correctamente");
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Ciclos Lectivos agregado correctamente");
 
         }
         else
@@ -203,56 +201,57 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
             string errorMessage = response.ReasonPhrase;
             Console.WriteLine($"Error: {errorMessage}");
 
-            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar el Ciclo Lectivo ");
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar los Ciclos Lectivos ");
 
         }
     }
 
-    private async Task ActualizarCicloLectivo()
+    private async Task ActualizarCiclosLectivos()
     {
         var cicloLectivo = CicloLectivoDtoModel;
 
-        using var response = await Http.PutAsJsonAsync($"{UtlHost}/CiclosLectivos/{NumeroCicloPorActualizar}", cicloLectivo);
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/CiclosLectivos/{CiclosLectivosPorActualizar}", cicloLectivo);
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCicloLectivo");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCiclosLectivos");
 
             await ObtenerCicloLectivo();
 
-            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Ciclo actualizado correctamente");
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Ciclos Lectivos actualizado correctamente");
         }
         else
         {
             string errorMessage = response.ReasonPhrase;
             Console.WriteLine($"Error: {errorMessage}");
 
-            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar el ciclo ");
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar los Ciclos Lectivos ");
 
         }
     }
 
-    private async Task EliminarCiclo()
+    private async Task EliminarCiclosLectivos()
     {
-        using var response = await Http.DeleteAsync($"{UtlHost}/CiclosLectivos/{NumeroCicloPorEliminar}");
+        using var response = await Http.DeleteAsync($"{UtlHost}/CiclosLectivos/{CiclosLectivosPorEliminar}");
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCicloLectivo");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCiclosLectivos");
 
             await ObtenerCicloLectivo();
 
-            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Ciclo eliminado correctamente");
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Ciclos Lectivos eliminado correctamente");
         }
         else
         {
             string errorMessage = response.ReasonPhrase;
             Console.WriteLine($"Error: {errorMessage}");
 
-            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar el ciclo");
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar los Ciclos Lectivos");
 
         }
     }
+
 
 #line default
 #line hidden

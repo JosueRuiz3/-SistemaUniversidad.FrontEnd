@@ -18,5 +18,6 @@ namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
         [Required(ErrorMessage = "El precio es obligatorio")]
         public decimal? Precio { get; set; }
 
+        public bool Activo { get; set; }
     }
 }
