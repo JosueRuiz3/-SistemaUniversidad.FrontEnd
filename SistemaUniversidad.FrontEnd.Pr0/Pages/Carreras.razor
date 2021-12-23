@@ -42,23 +42,24 @@
 
                         @foreach (var Carrera in ListaDeCarreras)
                         {
-                            <tr class="bgc-h-yellow-l4 d-style">
-                                <td class="text-600 text-dark">@Carrera.CodigoCarrera</td>
-                                <td class="text-600 text-orange-d2">@Carrera.NombreCarrera</td>
-                                <td>
-                                    <div class="d-none d-lg-flex">
+                        <tr class="bgc-h-yellow-l4 d-style">
+                            <td class="text-600 text-dark">@Carrera.CodigoCarrera</td>
+                            <td class="text-600 text-orange-d2">@Carrera.NombreCarrera</td>
+                            <td class="text-600 text-orange-d2">@Carrera.Acreditada</td>
+                            <td>
+                                <div class="d-none d-lg-flex">
 
-                                        <button type="button" class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-success btn-a-lighter-success" @onclick="() => MostrarModalDeActualizar(Carrera.CodigoCarrera)">
-                                            <i class="fa fa-pencil-alt"></i>
-                                        </button>
+                                    <button type="button" class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-success btn-a-lighter-success" @onclick="() => MostrarModalDeActualizar(Carrera.CodigoCarrera)">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </button>
 
-                                        <button type="button" class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-danger btn-a-lighter-danger" @onclick="() => MostrarModalDeEliminar(Carrera.CodigoCarrera)">
-                                            <i class="fa fa-trash-alt"></i>
-                                        </button>
+                                    <button type="button" class="mx-2px btn radius-1 border-2 btn-xs btn-brc-tp btn-light-secondary btn-h-lighter-danger btn-a-lighter-danger" @onclick="() => MostrarModalDeEliminar(Carrera.CodigoCarrera)">
+                                        <i class="fa fa-trash-alt"></i>
+                                    </button>
 
-                                    </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>}
@@ -271,7 +272,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarrera");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarreras");
 
             await ObtenerCarreras();
 
@@ -296,7 +297,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarrera");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarreras");
 
             await ObtenerCarreras();
 
@@ -318,7 +319,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCarrera");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCarreras");
 
             await ObtenerCarreras();
 

@@ -98,22 +98,163 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 78 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Sedes.razor"
+#line 255 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Sedes.razor"
        
 
-    private SedeDto[] ListaDeSedes;//Acá se guardará la lista de aulas
+    private SedeDto[] ListaDeSedes;
+
+    private SedeDto SedesDtoModel = new();
+
+
+    private string AccionDeEdicion;
+
+    private string NumeroSedesPorActualizar;
+
+    private string NumeroSedesPorEliminar;
 
     private string UtlHost = "https://localhost:44365/api";
 
-    protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
+    protected override async Task OnInitializedAsync()
     {
-        await ObtenerSedes(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerSedes();
     }
+
+    private async Task MostrarModalDeAgregar()
+    {
+
+        AccionDeEdicion = "Agregar";
+        SedesDtoModel = new();
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeSedes");
+    }
+
+    private async Task MostrarModalDeActualizar(string CodigoSede)
+    {
+
+        AccionDeEdicion = "Actualizar";
+
+        await ObtenerSedesPorId(CodigoSede);
+
+        NumeroSedesPorActualizar = CodigoSede;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeSedes");
+
+    }
+
+    private async Task GuardarAula()
+    {
+        if (AccionDeEdicion == "Agregar")
+        {
+            await AgregarSede();
+        }
+        else
+        {
+            await ActualizarSedes();
+        }
+    }
+
+
+    private async Task MostrarModalDeEliminar(string CodigoSede)
+    {
+
+        await ObtenerSedesPorId(CodigoSede);
+
+        NumeroSedesPorEliminar = CodigoSede;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeSedes");
+    }
+
+    private async Task ConfirmarEliminacionDeAula()
+    {
+
+        await EliminarSedes();
+
+    }
+
 
     private async Task ObtenerSedes()
     {
         ListaDeSedes = await Http.GetFromJsonAsync<SedeDto[]>($"{UtlHost}/Sedes");
     }
+
+    private async Task ObtenerSedesPorId(string CodigoSede)
+    {
+        SedesDtoModel = await Http.GetFromJsonAsync<SedeDto>($"{UtlHost}/Sedes/{CodigoSede}");
+
+    }
+
+
+    private async Task AgregarSede()
+    {
+        var Sede = SedesDtoModel;
+
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/Sedes", Sede);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeSedes");
+
+            await ObtenerSedes();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Sedes agregada correctamente");
+
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar la Sede ");
+
+        }
+    }
+
+    private async Task ActualizarSedes()
+    {
+        var Sede = SedesDtoModel;
+
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/Sedes/{NumeroSedesPorActualizar}", Sede);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeSedes");
+
+            await ObtenerSedes();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Sede actualizada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar el aula ");
+
+        }
+    }
+
+    private async Task EliminarSedes()
+    {
+        using var response = await Http.DeleteAsync($"{UtlHost}/Sedes/{NumeroSedesPorEliminar}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeSedes");
+
+            await ObtenerSedes();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Sedes eliminada correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar la Sedes");
+
+        }
+    }
+
 
 
 #line default

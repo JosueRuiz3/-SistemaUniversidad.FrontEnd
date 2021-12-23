@@ -98,7 +98,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 183 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Carreras.razor"
+#line 184 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Carreras.razor"
        
 
     private CarreraDto[] ListaDeCarreras;
@@ -190,7 +190,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarrera");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarreras");
 
             await ObtenerCarreras();
 
@@ -215,7 +215,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarrera");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCarreras");
 
             await ObtenerCarreras();
 
@@ -237,7 +237,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
         if (response.IsSuccessStatusCode)
         {
-            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCarrera");
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCarreras");
 
             await ObtenerCarreras();
 

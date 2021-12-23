@@ -118,6 +118,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         await ObtenerAulas(); 
     }
 
+
     private async Task MostrarModalDeAgregar()
     {
 

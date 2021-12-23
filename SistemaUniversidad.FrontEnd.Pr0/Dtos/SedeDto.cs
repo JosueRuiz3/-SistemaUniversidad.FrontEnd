@@ -23,5 +23,7 @@ namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
 
         [Required(ErrorMessage = "{0} es un campo obligatorio")]
         public string Direccion { get; set; }
+
+       
     }
 }
