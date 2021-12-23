@@ -23,5 +23,7 @@ namespace SistemaUniversidad.FrontEnd.Pr0.Dtos
         public decimal? MontoCursos { get; set; }
 
         public decimal? MontoTotal { get; set; }
+
+        public bool Activo { get; set; }
     }
 }

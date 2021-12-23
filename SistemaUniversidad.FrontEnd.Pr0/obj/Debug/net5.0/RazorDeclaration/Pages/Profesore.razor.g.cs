@@ -98,21 +98,162 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 82 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Profesore.razor"
+#line 304 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Profesore.razor"
        
-    private ProfesoreDto[] ListaDeProfesores;//Acá se guardará la lista de aulas
+    private ProfesoreDto[] ListaDeProfesores;
+
+    private ProfesoreDto ProfesoreDtoModel = new();
+
+
+    private string AccionDeEdicion;
+
+    private string NumeroCedulaProfesorPorActualizar;
+
+    private string NumeroCedulaProfesorPorEliminar;
 
     private string UtlHost = "https://localhost:44365/api";
 
-    protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
+    protected override async Task OnInitializedAsync()
     {
-        await ObtenerProfesores(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerProfesores();
     }
+
+    private async Task MostrarModalDeAgregar()
+    {
+
+        AccionDeEdicion = "Agregar";
+        ProfesoreDtoModel = new();
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeProfesor");
+    }
+
+    private async Task MostrarModalDeActualizar(string CedulaProfesor)
+    {
+
+        AccionDeEdicion = "Actualizar";
+
+        await ObtenerPorfesorPorId(CedulaProfesor);
+
+        NumeroCedulaProfesorPorActualizar = CedulaProfesor;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeProfesor");
+
+    }
+
+    private async Task GuardarProfesor()
+    {
+        if (AccionDeEdicion == "Agregar")
+        {
+            await AgregarProfesor();
+        }
+        else
+        {
+            await ActualizarProfesor();
+        }
+    }
+
+
+    private async Task MostrarModalDeEliminar(string CedulaProfesor)
+    {
+
+        await ObtenerPorfesorPorId(CedulaProfesor);
+
+        NumeroCedulaProfesorPorEliminar = CedulaProfesor;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeProfesor");
+    }
+
+    private async Task ConfirmarEliminacionDeProfesore()
+    {
+
+        await EliminarProfesor();
+
+    }
+
 
     private async Task ObtenerProfesores()
     {
         ListaDeProfesores = await Http.GetFromJsonAsync<ProfesoreDto[]>($"{UtlHost}/Profesores");
     }
+
+    private async Task ObtenerPorfesorPorId(string CedulaProfesor)
+    {
+        ProfesoreDtoModel = await Http.GetFromJsonAsync<ProfesoreDto>($"{UtlHost}/Profesores/{CedulaProfesor}");
+
+    }
+
+
+    private async Task AgregarProfesor()
+    {
+        var profesores = ProfesoreDtoModel;
+
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/Profesores", profesores);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeProfesor");
+
+            await ObtenerProfesores();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Profesor agregado correctamente");
+
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar el profesor ");
+
+        }
+    }
+
+    private async Task ActualizarProfesor()
+    {
+        var profesores = ProfesoreDtoModel;
+
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/Profesores/{NumeroCedulaProfesorPorActualizar}", profesores);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeProfesor");
+
+            await ObtenerProfesores();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Profesor actualizado correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar el profesor ");
+
+        }
+    }
+
+    private async Task EliminarProfesor()
+    {
+        using var response = await Http.DeleteAsync($"{UtlHost}/Profesores/{NumeroCedulaProfesorPorEliminar}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeProfesor");
+
+            await ObtenerProfesores();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Profesor eliminado correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar el profesor");
+
+        }
+    }
+
 
 #line default
 #line hidden

@@ -98,20 +98,158 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 74 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\CursosConProfesores.razor"
+#line 207 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\CursosConProfesores.razor"
        
-    private CursosConProfesoreDto[] ListaDeCursosConProfesores;//Acá se guardará la lista de aulas
+    private CursosConProfesoreDto[] ListaDeCursosConProfesores;
+
+    private CursosConProfesoreDto CursosConProfesoreDtoModel = new();
+
+
+    private string AccionDeEdicion;
+
+    private string CodigoCursoPorActualizar;
+
+    private string CodigoCursosConProfesorePorEliminar;
 
     private string UtlHost = "https://localhost:44365/api";
 
-    protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
+    protected override async Task OnInitializedAsync()
     {
-        await ObtenerCursosConProfesores(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerCursosConProfesores();
     }
+
+    private async Task MostrarModalDeAgregar()
+    {
+
+        AccionDeEdicion = "Agregar";
+        CursosConProfesoreDtoModel = new();
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCursosConProfesores");
+    }
+
+    private async Task MostrarModalDeActualizar(string CodigoCurso)
+    {
+
+        AccionDeEdicion = "Actualizar";
+
+        await ObtenerCursosConProfesorePorId(CodigoCurso);
+
+        CodigoCursoPorActualizar = CodigoCurso;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeCursosConProfesores");
+
+    }
+
+    private async Task GuardarCursosConProfesore()
+    {
+        if (AccionDeEdicion == "Agregar")
+        {
+            await AgregarCursosConProfesores();
+        }
+        else
+        {
+            await ActualizarCursosConProfesores();
+        }
+    }
+
+    private async Task MostrarModalDeEliminar(string CodigoCurso)
+    {
+
+        await ObtenerCursosConProfesorePorId(CodigoCurso);
+
+        CodigoCursosConProfesorePorEliminar = CodigoCurso;
+
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeCursosConProfesore");
+    }
+
+    private async Task ConfirmarEliminacionDeCursosConProfesores()
+    {
+
+        await EliminarCursosConProfesores();
+
+    }
+
 
     private async Task ObtenerCursosConProfesores()
     {
         ListaDeCursosConProfesores = await Http.GetFromJsonAsync<CursosConProfesoreDto[]>($"{UtlHost}/CursosConProfesores");
+    }
+
+    private async Task ObtenerCursosConProfesorePorId(string CodigoCurso)
+    {
+        CursosConProfesoreDtoModel = await Http.GetFromJsonAsync<CursosConProfesoreDto>($"{UtlHost}/CursosConProfesores/{CodigoCurso}");
+
+    }
+
+    private async Task AgregarCursosConProfesores()
+    {
+        var cursosConProfesore = CursosConProfesoreDtoModel;
+
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/CursosConProfesores", cursosConProfesore);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCursosConProfesores");
+
+            await ObtenerCursosConProfesores();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Curso agregada correctamente");
+
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar el Curso ");
+
+        }
+    }
+
+    private async Task ActualizarCursosConProfesores()
+    {
+        var cursosConProfesore = CursosConProfesoreDtoModel;
+
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/CursosConProfesores/{CodigoCursoPorActualizar}", cursosConProfesore);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeCursosConProfesores");
+
+            await ObtenerCursosConProfesores();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Curso actualizado correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar la Curso ");
+
+        }
+    }
+
+    private async Task EliminarCursosConProfesores()
+    {
+        using var response = await Http.DeleteAsync($"{UtlHost}/CursosConProfesores/{CodigoCursosConProfesorePorEliminar}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalConfirmacionDeEliminacionDeCurso");
+
+            await ObtenerCursosConProfesores();
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Curso eliminado correctamente");
+        }
+        else
+        {
+            string errorMessage = response.ReasonPhrase;
+            Console.WriteLine($"Error: {errorMessage}");
+
+            await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "Error al eliminar el curso");
+
+        }
     }
 
 #line default
