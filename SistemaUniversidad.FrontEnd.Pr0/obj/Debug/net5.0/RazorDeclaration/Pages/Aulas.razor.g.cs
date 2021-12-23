@@ -100,7 +100,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 #nullable restore
 #line 182 "C:\Users\andyj\Escritorio\Progra\Sistema Universidad\SistemaUniversidad.FrontEnd\SistemaUniversidad.FrontEnd.Pr0\Pages\Aulas.razor"
        
-    private AulaDto[] ListaDeAulas;//Acá se guardará la lista de aulas
+    private AulaDto[] ListaDeAulas;
 
     private AulaDto AulaDtoModel = new();
 
@@ -113,30 +113,28 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     private string UtlHost = "https://localhost:44365/api";
 
-    protected override async Task OnInitializedAsync() //Esto es lo primero que se ejecutará
+    protected override async Task OnInitializedAsync()
     {
-        await ObtenerAulas(); //con solo llamar a este método, ya se puede cargar la lista de aulas a nivel de la vista
+        await ObtenerAulas(); 
     }
 
     private async Task MostrarModalDeAgregar()
     {
 
-        AccionDeEdicion = "Agregar"; //Se especifica que esta en modo de "Agregar" para en el método de Guardar "GuardarAula" entonces hacer el insert
+        AccionDeEdicion = "Agregar"; 
+        AulaDtoModel = new(); 
 
-        AulaDtoModel = new(); //Se limpia el modelo y por ende se limpian los controles donde el usuario ingresa los datos
-
-        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeAula"); //global.openModa: Esta funcion tiene que existir  en wwwroot/js/utilitarios.js, "ModalEdicionDeAula" :es el id del modal que se quiere ocultar o mostrar
-
+        await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeAula"); 
     }
 
     private async Task MostrarModalDeActualizar(string NumeroAula)
     {
 
-        AccionDeEdicion = "Actualizar";//Se especifica que esta en modo de "Actualizar" para en el método de Guardar "GuardarAula" entonces hacer el Update
+        AccionDeEdicion = "Actualizar";
 
-        await ObtenerAulaPorId(NumeroAula); //Se obtiene los datos del API de una aula, para editarla
+        await ObtenerAulaPorId(NumeroAula);
 
-        NumeroAulaPorActualizar = NumeroAula; //deja en cache por así decirlo el número de aula que se va a actualizar
+        NumeroAulaPorActualizar = NumeroAula; 
 
         await JSRuntime.InvokeAsync<object>("global.openModal", "ModalEdicionDeAula");
 
@@ -146,11 +144,11 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
     {
         if (AccionDeEdicion == "Agregar")
         {
-            await AgregarAula(); //llama al método que va al API a insertar un Aula
+            await AgregarAula(); 
         }
         else
         {
-            await ActualizarAula(); //llama al método que va al API a actualizar un Aula
+            await ActualizarAula();
         }
     }
 
@@ -158,17 +156,17 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
     private async Task MostrarModalDeEliminar(string NumeroAula)
     {
 
-        await ObtenerAulaPorId(NumeroAula); //Se obtiene los datos del API de una aula, para eliminarla
+        await ObtenerAulaPorId(NumeroAula); 
 
-        NumeroAulaPorEliminar = NumeroAula; //deja en cache por así decirlo el núnmero de aula que se va a eliminar
+        NumeroAulaPorEliminar = NumeroAula; 
 
         await JSRuntime.InvokeAsync<object>("global.openModal", "ModalConfirmacionDeEliminacionDeAula");
     }
 
-    private async Task ConfirmarEliminacionDeAula() //Este método se ejecuta cuanso se presiona el botón de "Sí", para borrar un aula
+    private async Task ConfirmarEliminacionDeAula()
     {
 
-        await EliminarAula(); //llama al método que va al API a liminar un Aula
+        await EliminarAula(); 
 
     }
 
@@ -180,22 +178,22 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     private async Task ObtenerAulaPorId(string NumeroAula)
     {
-        AulaDtoModel = await Http.GetFromJsonAsync<AulaDto>($"{UtlHost}/Aulas/{NumeroAula}"); // ejemplo: https://localhost:44302/api/Aulas/23
+        AulaDtoModel = await Http.GetFromJsonAsync<AulaDto>($"{UtlHost}/Aulas/{NumeroAula}"); 
 
     }
 
 
     private async Task AgregarAula()
     {
-        var Aula = AulaDtoModel; //Este objeto "AulaDtoModel", contiene los valores que el usuario ingresa en los texbox, la magia lo hace el <EditForm Model="@AulaDtoModel", que llena automaticamente el objeto con lo que el usuario ingresa
+        var Aula = AulaDtoModel; 
 
-        using var response = await Http.PostAsJsonAsync($"{UtlHost}/Aulas", Aula); // ejemplo: https://localhost:44302/api/Aulas
+        using var response = await Http.PostAsJsonAsync($"{UtlHost}/Aulas", Aula); 
 
-        if (response.IsSuccessStatusCode) //si todo sale bien con el llamado al API 
+        if (response.IsSuccessStatusCode)
         {
             await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeAula");
 
-            await ObtenerAulas(); //Se recarga la lista da ulas para poder ver el registro agregado
+            await ObtenerAulas(); 
 
             await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Aula agregada correctamente");
 
@@ -203,7 +201,7 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
         else
         {
             string errorMessage = response.ReasonPhrase;
-            Console.WriteLine($"Error: {errorMessage}"); //Se muestra en la consola el error que devuelve el API
+            Console.WriteLine($"Error: {errorMessage}"); 
 
             await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo agregar el aula ");
 
@@ -212,22 +210,22 @@ using SistemaUniversidad.FrontEnd.Pr0.Dtos;
 
     private async Task ActualizarAula()
     {
-        var Aula = AulaDtoModel; //Este objeto "AulaDtoModel", contiene los valores que el usuario ingresa en los texbox, la magia lo hace el <EditForm Model="@AulaDtoModel", que llena automaticamente el objeto con lo que el usuario ingresa
+        var Aula = AulaDtoModel; 
 
-        using var response = await Http.PutAsJsonAsync($"{UtlHost}/Aulas/{NumeroAulaPorActualizar}", Aula);// ejemplo: https://localhost:44302/api/Aulas/23
+        using var response = await Http.PutAsJsonAsync($"{UtlHost}/Aulas/{NumeroAulaPorActualizar}", Aula);
 
-        if (response.IsSuccessStatusCode) //si todo sale bien con el llamado al API 
+        if (response.IsSuccessStatusCode) 
         {
             await JSRuntime.InvokeAsync<object>("global.closeModal", "ModalEdicionDeAula");
 
-            await ObtenerAulas(); //Se recarga la lista da ulas para poder ver el registro actualizado
+            await ObtenerAulas(); 
 
             await JSRuntime.InvokeAsync<object>("global.mostrarAlertaExito", "Aula actualizada correctamente");
         }
         else
         {
             string errorMessage = response.ReasonPhrase;
-            Console.WriteLine($"Error: {errorMessage}"); //Se muestra en la consola el error que devuelve el API
+            Console.WriteLine($"Error: {errorMessage}");
 
             await JSRuntime.InvokeAsync<object>("global.mostrarAlertaError", "No se pudo actualizar el aula ");
 
